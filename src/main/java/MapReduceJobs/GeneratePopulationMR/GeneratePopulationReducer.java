@@ -6,7 +6,7 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Reducer;
 
 import java.io.IOException;
-
+//Reucer to perform GA
 public class GeneratePopulationReducer extends
         Reducer<NullWritable, Text, NullWritable, Text> {
     @Override

@@ -1,9 +1,11 @@
 package MapReduceJobs.GeneratePopulationMR
 
-import FuzzyTimeSeries.{FuzzyIndividual, AnnualRecord}
+import FuzzyTimeSeries.{AnnualRecord, FuzzyIndividual}
+import Main.PFGAConstants._
 import org.apache.hadoop.filecache.DistributedCache
 import org.apache.hadoop.io.{LongWritable => LW, NullWritable => NW, Text => T}
 import org.apache.hadoop.mapreduce.Mapper
+import org.apache.hadoop.mapreduce.lib.output.MultipleOutputs
 
 import scala.collection.mutable.ArrayBuffer
 
@@ -16,6 +18,7 @@ class GeneratePopulationMapper extends Mapper[LW, T, NW, T] {
   var numInd = 1000
   var lineCnt = 0
   var population = ArrayBuffer[AnnualRecord]()
+  var multipleOp: MultipleOutputs[NW, T] = _
 
   override def setup(conT: Mapper[LW, T, NW, T]#Context) = {
     val conf = conT.getConfiguration
@@ -29,6 +32,7 @@ class GeneratePopulationMapper extends Mapper[LW, T, NW, T] {
     numOfElements = recordValues._4
     order = conf.getInt("order", 3)
     numInd = conf.getInt("numInd", 10000)
+    multipleOp = new MultipleOutputs[NW, T](conT)
   }
 
   override def map(key: LW, value: T,
@@ -38,6 +42,7 @@ class GeneratePopulationMapper extends Mapper[LW, T, NW, T] {
     f.setChromosome(value.toString.trim)
     f.initializeFuzzySet(annualRecords, order)
     f.forecastValues()
+    //    multipleOp.write(GENERATION, NW.get(), new T(f.toString))
     conT.write(NW.get(), new T(f.toString))
   }
 
@@ -48,8 +53,10 @@ class GeneratePopulationMapper extends Mapper[LW, T, NW, T] {
         f.generateChromosome(ul, ll, numOfElements)
         f.initializeFuzzySet(annualRecords, order)
         f.forecastValues()
+        //        multipleOp.write(GENERATION, NW.get(), new T(f.toString))
         conT.write(NW.get(), new T(f.toString))
       }
     }
+    multipleOp.close()
   }
 }

@@ -38,7 +38,7 @@ libraryDependencies ++= Seq(
 
 instrumentSettings
 
-ScoverageKeys.excludedPackages in ScoverageCompile := ".*MRDriver"
+ScoverageKeys.excludedPackages in ScoverageCompile := ".*MRDriver;.*HamaJobs.*;.*Main.*"
 
 
 mergeStrategy in assembly <<= (mergeStrategy in assembly) { (old) =>

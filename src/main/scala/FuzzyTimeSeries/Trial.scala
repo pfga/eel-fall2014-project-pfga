@@ -1,5 +1,6 @@
 package FuzzyTimeSeries
 
+import Main.PFGAConstants._
 import MapReduceJobs.GeneratePopulationMR.GeneratePopulationMRDriver
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.Path
@@ -42,6 +43,10 @@ object Trial extends App {
     println(minMse)
   */
   "rm -rf op".!
+  "rm -rf ip/*".!
+  (0 to 4).foreach { i =>
+    s"touch ip/$GENERATION.$i".!
+  }
   GeneratePopulationMRDriver.run(
     new Configuration(), "ip", new Path("op/ip1"), "src/main/resources/input_fts_2.txt")
   GeneratePopulationMRDriver.run(

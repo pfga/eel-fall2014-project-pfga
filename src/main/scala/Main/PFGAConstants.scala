@@ -10,4 +10,5 @@ object PFGAConstants {
   val NANO_SEC = 1000000000.0
   val SPACE_DELIM = " "
   val MSE_DELIM = "\u0001"
+  val GENERATION = "GENERATION"
 }

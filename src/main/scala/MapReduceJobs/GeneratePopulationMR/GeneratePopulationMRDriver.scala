@@ -26,7 +26,8 @@ object GeneratePopulationMRDriver {
     job.setInputFormatClass(classOf[TextInputFormat])
     job.setOutputFormatClass(classOf[TextOutputFormat[NW, T]])
     job.setJarByClass(GeneratePopulationMRDriver.getClass)
-    FileInputFormat.setInputPaths(job, s"$ip/$GENERATION*")
+    //    FileInputFormat.setInputPaths(job, s"$ip/$GENERATION*")
+    FileInputFormat.setInputPaths(job, ip)
     FileOutputFormat.setOutputPath(job, op)
     job.waitForCompletion(true)
   }

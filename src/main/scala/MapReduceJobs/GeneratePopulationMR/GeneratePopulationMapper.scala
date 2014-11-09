@@ -42,7 +42,8 @@ class GeneratePopulationMapper extends Mapper[LW, T, NW, T] {
     f.setChromosome(value.toString.trim)
     f.initializeFuzzySet(annualRecords, order)
     f.forecastValues()
-    multipleOp.write(GENERATION, NW.get(), new T(f.toString))
+    //    multipleOp.write(GENERATION, NW.get(), new T(f.toString))
+    conT.write(NW.get(), new T(f.toString))
   }
 
   override def cleanup(conT: Mapper[LW, T, NW, T]#Context) = {
@@ -52,7 +53,8 @@ class GeneratePopulationMapper extends Mapper[LW, T, NW, T] {
         f.generateChromosome(ul, ll, numOfElements)
         f.initializeFuzzySet(annualRecords, order)
         f.forecastValues()
-        multipleOp.write(GENERATION, NW.get(), new T(f.toString))
+        //        multipleOp.write(GENERATION, NW.get(), new T(f.toString))
+        conT.write(NW.get(), new T(f.toString))
       }
     }
     multipleOp.close()

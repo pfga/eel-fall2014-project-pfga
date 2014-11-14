@@ -9,22 +9,6 @@ import org.apache.hadoop.conf.Configuration
  */
 object ConfigReader {
 
-  def containsKey(config: PropertiesConfiguration, colName: String) = {
-    if (config.isEmpty) {
-      config
-    } else if (!config.containsKey(colName)) {
-      println(s"'${colName}' property not found!")
-      config.clear()
-    }
-  }
-
-  def validateConfig(config: PropertiesConfiguration) = {
-    containsKey(config, schema)
-    containsKey(config, loadDate)
-    containsKey(config, reduceColumn)
-    containsKey(config, delimiterStr)
-  }
-
   def getConf(configName: String) = {
     val conf = new Configuration()
     val config = new PropertiesConfiguration(configName)
@@ -50,5 +34,21 @@ object ConfigReader {
       conf.set(opDtFormatStr, opDtFormat)
     }
     conf
+  }
+
+  def validateConfig(config: PropertiesConfiguration) = {
+    containsKey(config, schema)
+    containsKey(config, loadDate)
+    containsKey(config, reduceColumn)
+    containsKey(config, delimiterStr)
+  }
+
+  def containsKey(config: PropertiesConfiguration, colName: String) = {
+    if (config.isEmpty) {
+      config
+    } else if (!config.containsKey(colName)) {
+      println(s"'${colName}' property not found!")
+      config.clear()
+    }
   }
 }

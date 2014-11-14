@@ -2,7 +2,6 @@ package Parser.InputDataParser
 
 import MapReduceJobs.CommonMR
 import Parser.ParseFunctions
-import org.apache.hadoop.filecache.DistributedCache
 import org.apache.hadoop.io.{LongWritable => LW, Text => T}
 import org.apache.hadoop.mapreduce.Reducer
 

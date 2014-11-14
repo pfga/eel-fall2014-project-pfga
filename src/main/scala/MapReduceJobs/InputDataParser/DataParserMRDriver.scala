@@ -1,9 +1,6 @@
 package Parser.InputDataParser
 
-import java.net.URI
-
 import org.apache.hadoop.conf.Configuration
-import org.apache.hadoop.filecache.DistributedCache
 import org.apache.hadoop.fs.Path
 import org.apache.hadoop.io.{LongWritable => LW, Text => T}
 import org.apache.hadoop.mapreduce.Job

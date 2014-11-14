@@ -1,6 +1,6 @@
-package FuzzySet;
+package MapReduceJobs.GeneratePopulationMR;
 
-import java.util.*;
+import java.util.List;
 
 /**
  * This is the driver class to make the predictions.

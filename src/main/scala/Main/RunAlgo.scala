@@ -1,21 +1,19 @@
 package Main
 
-import FuzzySet.FGA
-import Main.PFGAConstants._
-import Parser.FTSPrepareMR.FTSDataPrepareMRDriver
-import Parser.InputDataParser.DataParserMRDriver
-import Parser.ParserUtils.ConfigReader
-import org.apache.hadoop.conf.Configuration
-import org.apache.hadoop.fs.Path
-import org.apache.hadoop.util.GenericOptionsParser
 
-import scala.collection.JavaConverters._
+import Main.PFGAConstants._
+import MapReduceJobs.GeneratePopulationMR.GeneratePopulationMRDriver
+import org.apache.hadoop.conf.Configuration
+import org.apache.hadoop.filecache.DistributedCache
+
 import scala.sys.process._
 
-/** x
-  * Created by preethu19th on 10/5/14.
-  */
+/**
+ * Created by preethu19th on 10/5/14.
+ */
 object RunAlgo extends App {
+  val startTime = System.nanoTime()
+
   /*
   val conf: Configuration = ConfigReader.getConf("parse-config.properties")
   val strArgs = new GenericOptionsParser(conf, args).getRemainingArgs
@@ -35,11 +33,28 @@ object RunAlgo extends App {
 */
   val ftsIpFileName = "src/main/resources/input_fts_2.txt"
   //val ftsIpFileName = ftsIp + REDUCE_PART_FILENAME
-  val (annualRecords, min, max, intervals) = HelperUtils.HelperFunctions
-    .readReduceOp(new Configuration(), ftsIpFileName)
-
-  println(min, max, intervals)
 
   //  FGA.run(400, annualRecords.asJava, 13000, 20000, 7)
-//  FGA.run(1, annualRecords.asJava, min, max, 10)
+  //  FGA.run(1, annualRecords.asJava, min, max, 10)
+
+  "rm -rf op/".!
+  "mkdir -p op/ip0".!
+  (0 until NUM_MAPPER).foreach { i =>
+    s"touch op/ip0/$GENERATION.$i".!
+  }
+  s"touch op/ip0/$REDUCE_PART_FILENAME".!
+
+  val conf = new Configuration()
+  conf.setInt("per_mapper", 10000)
+  conf.setInt("mapper_cnt", 5)
+  DistributedCache.addCacheFile(new java.net.URI(ftsIpFileName), conf)
+
+  (0 to 5).foreach { i =>
+    GeneratePopulationMRDriver.run(conf, "op/ip", i)
+  }
+  val stopTime = System.nanoTime()
+
+  println((Runtime.getRuntime.totalMemory() - Runtime.getRuntime.freeMemory()) / 1024 / 1024)
+  println((stopTime - startTime) / 1000000000)
+
 }

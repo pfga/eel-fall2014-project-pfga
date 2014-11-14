@@ -12,7 +12,7 @@ import org.scalatest.FlatSpec
 class DataParserMRTest extends FlatSpec {
 
   val conf: Configuration = ConfigReader.getConf("test-parse.properties")
-    val mapper = new DataParserMapper
+  val mapper = new DataParserMapper
   val mapDriver = MapDriver.newMapDriver(mapper)
   mapDriver.withConfiguration(conf)
 

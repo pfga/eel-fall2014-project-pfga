@@ -1,4 +1,4 @@
-package FuzzySet;
+package MapReduceJobs.GeneratePopulationMR;
 
 import java.util.Arrays;
 import java.util.List;
@@ -6,8 +6,8 @@ import java.util.List;
 
 /**
  * This class contains the utility methods to be used.
- * @author ankit
  *
+ * @author ankit
  */
 public class Utility {
 
@@ -17,6 +17,7 @@ public class Utility {
 
     /**
      * It converts a comma separated string to list of strings.
+     *
      * @param str
      * @return
      */

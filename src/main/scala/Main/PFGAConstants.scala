@@ -9,6 +9,9 @@ object PFGAConstants {
   val REDUCE_PART_FILENAME = "/part-r-00000"
   val NANO_SEC = 1000000000.0
   val SPACE_DELIM = " "
-  val MSE_DELIM = "\u0001"
+  val MSE_DELIM = "\t"
   val GENERATION = "GENERATION"
+  val PER_MAPPER = 1000
+  val NUM_MAPPER = 1
+  val BEST_IND = "BESTIND"
 }

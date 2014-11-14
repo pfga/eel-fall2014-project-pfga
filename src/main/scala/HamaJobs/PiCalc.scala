@@ -13,22 +13,9 @@ import org.apache.hama.bsp._
 object PiCalc {
   val TMP_OUTPUT = new Path("pi")
 
-  def printOutput(conf: Configuration) = {
-    val fs = FileSystem.get(conf)
-    val files = fs.listStatus(TMP_OUTPUT)
-    (0 until files.length).foreach { i =>
-      if (files(i).getLen() > 0) {
-        val in = fs.open(files(i).getPath())
-        IOUtils.copyBytes(in, System.out, conf, false)
-        in.close()
-      }
-    }
-
-  }
-
   def main(args: Array[String]) {
     val conf = new HamaConfiguration()
-    conf.set("bsp.max.tasks.per.job","50")
+    conf.set("bsp.max.tasks.per.job", "50")
     val bsp = new BSPJob(conf, PiCalc.getClass)
 
     bsp.setJobName("Pi Estimation Example")
@@ -53,6 +40,18 @@ object PiCalc {
     }
   }
 
+  def printOutput(conf: Configuration) = {
+    val fs = FileSystem.get(conf)
+    val files = fs.listStatus(TMP_OUTPUT)
+    (0 until files.length).foreach { i =>
+      if (files(i).getLen() > 0) {
+        val in = fs.open(files(i).getPath())
+        IOUtils.copyBytes(in, System.out, conf, false)
+        in.close()
+      }
+    }
+
+  }
 
   class MyEstimator extends BSP[NW, NW, T, DW, DW] {
     final val LOG = LogFactory.getLog(classOf[PiCalc.MyEstimator])
@@ -89,9 +88,10 @@ object PiCalc {
         }
 
         pi = pi / numPeers
-        peer.write(new T(peer.getAllPeerNames.length +" _"), new DW())
+        peer.write(new T(peer.getAllPeerNames.length + " _"), new DW())
         peer.write(new T("Estimated value of PI is"), new DW(pi))
       }
     }
   }
+
 }

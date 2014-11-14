@@ -1,4 +1,4 @@
-import AssemblyKeys._
+import sbtassembly.Plugin.AssemblyKeys._
 
 assemblySettings
 
@@ -14,7 +14,7 @@ resolvers ++= Seq(Resolver.sonatypeRepo("releases"),
 
 libraryDependencies ++= Seq(
   "com.google.guava" % "guava" % "18.0-rc2",
-  "org.mortbay.jetty" % "jetty" %  "7.0.0.pre5",
+  "org.mortbay.jetty" % "jetty" % "7.0.0.pre5",
   "org.mortbay.jetty" % "jetty-util" % "7.0.0.pre5",
   "com.sun.jersey" % "jersey-core" % "1.18.1",
   "com.sun.jersey" % "jersey-server" % "1.18.1",
@@ -41,8 +41,7 @@ instrumentSettings
 ScoverageKeys.excludedPackages in ScoverageCompile := ".*MRDriver;.*HamaJobs.*;.*Main.*"
 
 
-mergeStrategy in assembly <<= (mergeStrategy in assembly) { (old) =>
-{
+mergeStrategy in assembly <<= (mergeStrategy in assembly) { (old) => {
   case PathList("META-INF", xs@_*) => MergeStrategy.discard
   case x => MergeStrategy.first
 }

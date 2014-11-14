@@ -1,16 +1,18 @@
 package FuzzyTimeSeries
 
-import scala.collection.{mutable => m}
 import Main.PFGAConstants._
+
+import scala.collection.{mutable => m}
+import scala.util.Random
 
 class FuzzyIndividual {
 
+  val discourseMap = m.Map[String, Int]()
   var chromosome: Array[Int] = _
   var annualRecords: Array[AnnualRecord] = _
-  val discourseMap = m.Map[String, Int]()
   var mse: Double = 0.0
 
-  override def toString() = {
+  override def toString = {
     s"${chromosome.mkString(SPACE_DELIM)}$MSE_DELIM$mse"
   }
 
@@ -42,7 +44,7 @@ class FuzzyIndividual {
 
   /**
    * To initialize universe with already generated data
-   * @param ipStr
+   * @param ipStr this will be the generated individual
    */
 
   def setChromosome(ipStr: String) = {
@@ -115,8 +117,8 @@ class FuzzyIndividual {
   }
 
   def forecastValues() = {
-    val (sqSums, numOfFcVals) = annualRecords.foldLeft(0.0, 0) { (mseCols, rec) =>
-      val (sqSums, numOfFcVals) = mseCols
+    val (sqSums, numFc) = annualRecords.foldLeft(0.0, 0) { (mseCols, rec) =>
+      val (sqSums, numFc) = mseCols
       val (sum, n) = rec.flrgRH.split(",").foldLeft(0, 0) { (cols, s) =>
         val (sum, n) = cols
         (sum + discourseMap.getOrElse(s, 0), n + 1)
@@ -125,10 +127,31 @@ class FuzzyIndividual {
         rec.fcEvents = sum / n
       }
       if (rec.flrgRH.isEmpty)
-        (sqSums, numOfFcVals)
+        (sqSums, numFc)
       else
-        (sqSums + Math.pow(rec.fcEvents - rec.events, 2), numOfFcVals + 1)
+        (sqSums + Math.pow(rec.fcEvents - rec.events, 2), numFc + 1)
     }
-    mse = Math.pow(sqSums / numOfFcVals, 0.5)
+    mse = Math.pow(sqSums / numFc, 0.5)
+  }
+
+  def crossOverChromosome(goodChromosome: Array[Int]) = {
+    (0 until chromosome.length).foreach { i =>
+      if (Random.nextBoolean()) chromosome(i) = goodChromosome(i)
+      if (i > 0) setDiscourseMap(i, chromosome(i - 1), chromosome(i))
+    }
+  }
+
+  def mutateChromosome() = {
+    val len = chromosome.length
+    val idx = Array.ofDim[Int](2)
+    idx(0) = Math.abs(Random.nextInt() % len)
+    idx(1) = Math.abs(Random.nextInt() % len)
+    val sIdx = idx.sorted
+    (sIdx(0) to sIdx(1)).foreach { i =>
+      val lowerVal = if (i == 0) chromosome(i) else chromosome(i - 1)
+      val upperVal = if (i == len - 1) chromosome(i) else chromosome(i + 1)
+      if (upperVal - lowerVal > 1) chromosome(i) = (lowerVal + upperVal) / 2
+      if (i > 0) setDiscourseMap(i, chromosome(i - 1), chromosome(i))
+    }
   }
 }

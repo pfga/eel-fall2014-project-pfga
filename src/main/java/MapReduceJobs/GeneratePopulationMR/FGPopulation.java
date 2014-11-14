@@ -1,33 +1,31 @@
-package FuzzySet;
+package MapReduceJobs.GeneratePopulationMR;
 
 import java.util.Arrays;
 import java.util.List;
 
 /**
  * This class stores the population of Genetic Algorithm.
- * 
- * @author ankit
  *
+ * @author ankit
  */
 public class FGPopulation implements Cloneable {
 
+    public final static double oldPopulationRatio = 0.7;
+    //Cross Over related constants
+    public final static double crossOverPopulationRatio = 0.1;
+    public final static int crossOverIndex = 3;
+    //Mutation related constants.
+    public final static double mutationPopulationRatio = 0.05;
+    public static int mutationPoint = 3;
     FGIndividual individuals[];
     int order;
     int noOfGenes;
     int ll;
     int ul;
-    public final static double oldPopulationRatio = 0.7;
-
-    //Cross Over related constants
-    public final static double crossOverPopulationRatio = 0.1;
-    public final static int crossOverIndex = 3;
-
-    //Mutation related constants.
-    public final static double mutationPopulationRatio = 0.05;
-    public static int mutationPoint = 3;
 
     /**
      * Constructor to initialize the population.
+     *
      * @param pop
      * @param order
      * @param noOfGenes
@@ -42,6 +40,15 @@ public class FGPopulation implements Cloneable {
         this.ul = ul;
     }
 
+    public FGPopulation(FGIndividual[] inds) {
+        individuals = new FGIndividual[inds.length];
+        int i = 0;
+        for (FGIndividual fi : inds) {
+            individuals[i] = (FGIndividual) fi.clone();
+            i++;
+        }
+    }
+
     /**
      * This method is used to generate the initial population for GA.
      */
@@ -54,7 +61,7 @@ public class FGPopulation implements Cloneable {
 
     /**
      * This method computes the MSE for the Input Annual Records.
-     * 
+     *
      * @param annualRecords
      */
     public void computePopulation(List<AnnualRecord> annualRecords) {
@@ -65,9 +72,9 @@ public class FGPopulation implements Cloneable {
         }
     }
 
-   
     /**
      * This method stores the individual at a particular index.
+     *
      * @param index
      * @param indiv
      */
@@ -125,7 +132,7 @@ public class FGPopulation implements Cloneable {
 
     /**
      * This method returns the best individual.
-     * 
+     *
      * @return
      */
     private FGIndividual getRandomBestIndiv() {
@@ -138,7 +145,6 @@ public class FGPopulation implements Cloneable {
         else
             return individuals[index2];
     }
-
 
     /**
      * This method is used in the cross-over process of GA.
@@ -193,15 +199,6 @@ public class FGPopulation implements Cloneable {
         return fg;
     }
 
-    public FGPopulation(FGIndividual[] inds) {
-        individuals = new FGIndividual[inds.length];
-        int i = 0;
-        for (FGIndividual fi : inds) {
-            individuals[i] = (FGIndividual) fi.clone();
-            i++;
-        }
-    }
-    
     public FGIndividual[] getIndividuals() {
         return individuals;
     }

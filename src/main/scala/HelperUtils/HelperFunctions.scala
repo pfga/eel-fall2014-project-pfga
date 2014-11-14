@@ -1,7 +1,8 @@
 package HelperUtils
 
-import java.io.{FileReader, BufferedReader, InputStreamReader}
+import java.io.{BufferedReader, InputStreamReader}
 
+import FuzzyTimeSeries.FuzzyIndividual
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.{FileSystem, Path}
 
@@ -38,70 +39,22 @@ object HelperFunctions {
     cols(schemaMap(colName))
   }
 
-  /**
-   * Read the time data from HDFS from last MapReduce job
-   * Along with min,max and the time data, find interval
-   *
-   * @param conf
-   * @param opStr
-   * @return (annualRecords:Array[(String,Int)],min:Int,max:Int,intervals:Int)
-   */
-  def readReduceOp(conf: Configuration, opStr: String) = {
+  def readEventFile(conf: Configuration, opStr: String) = {
     var avgDist = Map[String, Int]()
     var (listLines, min, max) = (ArrayBuffer[(String, Int)](), 0, 0)
-    try {
-      val op = new Path(opStr)
-      val fs = FileSystem.get(conf)
-      val bufRead = new BufferedReader(new InputStreamReader(fs.open(op)))
 
-      var line = bufRead.readLine()
-      while (line != null) {
-        if (!line.trim.isEmpty) {
-          val cols = line.split("\t")
-          cols(0) match {
-            case "max" => max = cols(1).toInt
-            case "min" => min = cols(1).toInt
-            case _ =>
-              avgDist = avgDist + Tuple2(cols(0), cols(1).toInt)
-              listLines.append((cols(0), cols(1).toInt)) // :: listLines
-          }
-        }
-        line = bufRead.readLine()
+    def parseLine(line: String) = {
+      val cols = line.split("\t")
+      cols(0) match {
+        case "max" => max = cols(1).toInt
+        case "min" => min = cols(1).toInt
+        case _ =>
+          avgDist = avgDist + Tuple2(cols(0), cols(1).toInt)
+          listLines.append((cols(0), cols(1).toInt)) // :: listLines
       }
-      bufRead.close
-    } catch {
-      case e: Exception => println(e)
     }
 
-
-    val (retmin, retmax, intervals) = getRoundedIntervalMinMax(avgDist, min, max)
-    (listLines.toArray, retmin, retmax, intervals)
-  }
-
-  def readCacheFile(conf: Configuration, opStr: String) = {
-    var avgDist = Map[String, Int]()
-    var (listLines, min, max) = (ArrayBuffer[(String, Int)](), 0, 0)
-    try {
-      val bufRead = new BufferedReader(new FileReader(opStr))
-
-      var line = bufRead.readLine()
-      while (line != null) {
-        if (!line.trim.isEmpty) {
-          val cols = line.split("\t")
-          cols(0) match {
-            case "max" => max = cols(1).toInt
-            case "min" => min = cols(1).toInt
-            case _ =>
-              avgDist = avgDist + Tuple2(cols(0), cols(1).toInt)
-              listLines.append((cols(0), cols(1).toInt))
-          }
-        }
-        line = bufRead.readLine()
-      }
-      bufRead.close
-    } catch {
-      case e: Exception => println(e)
-    }
+    baseReadCacheFile(conf, opStr, parseLine)
 
     val (retmin, retmax, intervals) = getRoundedIntervalMinMax(avgDist, min, max)
     (listLines.toArray, retmin, retmax, intervals)
@@ -146,6 +99,17 @@ object HelperFunctions {
    *
    * @param value
    * @param addVal
+   * @return
+   */
+  def getRoundedToBase(value: Int, addVal: Int): Int = {
+    val base = getBase(value)
+    getRoundedToBase(value, addVal, base)
+  }
+
+  /**
+   *
+   * @param value
+   * @param addVal
    * @param base
    * @return
    */
@@ -153,17 +117,6 @@ object HelperFunctions {
     var rndVal = value
     while (rndVal % base != 0) rndVal = rndVal + addVal
     rndVal
-  }
-
-  /**
-   *
-   * @param value
-   * @param addVal
-   * @return
-   */
-  def getRoundedToBase(value: Int, addVal: Int): Int = {
-    val base = getBase(value)
-    getRoundedToBase(value, addVal, base)
   }
 
   /**
@@ -181,5 +134,37 @@ object HelperFunctions {
       base = base * 10
     }
     base
+  }
+
+  def readPopulationFile(conf: Configuration, opStr: String) = {
+    val pop = ArrayBuffer[FuzzyIndividual]()
+
+    def parseLine(line: String) = {
+      val f = new FuzzyIndividual()
+      f.setChromosome(line)
+      pop.append(f)
+    }
+
+    baseReadCacheFile(conf, opStr, parseLine)
+
+    pop
+  }
+
+  def baseReadCacheFile(conf: Configuration, opStr: String,
+                        parseLine: (String => Unit)) = {
+    try {
+      val op = new Path(opStr)
+      val fs = FileSystem.get(conf)
+      val bufRead = new BufferedReader(new InputStreamReader(fs.open(op)))
+
+      var line = bufRead.readLine()
+      while (line != null) {
+        if (!line.trim.isEmpty) parseLine(line)
+        line = bufRead.readLine()
+      }
+      bufRead.close
+    } catch {
+      case e: Exception => println(e)
+    }
   }
 }

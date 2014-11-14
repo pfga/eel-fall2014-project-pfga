@@ -16,8 +16,9 @@ object FTSIpPrepare extends App {
   val hadoopConf = new Configuration()
   val conf = new HamaConfiguration(hadoopConf)
   val strArgs = new GenericOptionsParser(conf, args).getRemainingArgs
-  val ip = "ip"//strArgs(0)
-  val TMP_OUTPUT = new Path("op/op")//strArgs(1) + strArgs(1))
+  val ip = "ip"
+  //strArgs(0)
+  val TMP_OUTPUT = new Path("op/op") //strArgs(1) + strArgs(1))
 
   conf.set("bsp.max.tasks.per.job", "72")
 
@@ -108,4 +109,5 @@ object FTSIpPrepare extends App {
       }
     }
   }
+
 }

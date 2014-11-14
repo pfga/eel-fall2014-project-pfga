@@ -22,17 +22,17 @@ class ParseFunctions(conf: Configuration) {
   lazy val ipDtFormat = conf.get(ipDtFormatStr)
   lazy val opDtFormat = conf.get(opDtFormatStr)
 
+  def mapRawLine(line: T) = {
+    val cols = line.toString.split(delimiter, -1)
+    (dtFormatConvert(HelperFunctions.getCol(cols, dtKeyName, schemaMap)),
+      HelperFunctions.getCol(cols, reduceColName, schemaMap).toLong)
+  }
+
   def dtFormatConvert(dateStr: String) = {
     val format = new java.text.SimpleDateFormat(ipDtFormat)
     val op = new java.text.SimpleDateFormat(opDtFormat)
     val ipDt = format.parse(dateStr)
     op.format(ipDt)
-  }
-
-  def mapRawLine(line: T) = {
-    val cols = line.toString.split(delimiter, -1)
-    (dtFormatConvert(HelperFunctions.getCol(cols, dtKeyName, schemaMap)),
-      HelperFunctions.getCol(cols, reduceColName, schemaMap).toLong)
   }
 
   def reduceRawLine(values: java.lang.Iterable[LW],

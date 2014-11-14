@@ -4,9 +4,9 @@ import FuzzyTimeSeries.FuzzyIndividual;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Reducer;
-import java.util.ArrayList;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 //Reucer to perform GA
@@ -16,37 +16,35 @@ public class GeneratePopulationReducer extends
     //Cross Over related constants
     public final static double crossOverPopulationRatio = 0.1;
     public final static int crossOverIndex = 3;
-
+    public final static double oldPopulationRatio = 0.7;
+    //Mutation related constants.
+    public final static double mutationPopulationRatio = 0.05;
+    public static int mutationPoint = 3;
     FuzzyIndividual individuals[];
     int order;
     int noOfGenes;
     int ll;
     int ul;
-    public final static double oldPopulationRatio = 0.7;
-
-    //Mutation related constants.
-    public final static double mutationPopulationRatio = 0.05;
-    public static int mutationPoint = 3;
 
     @Override
     public void reduce(NullWritable key,
                        Iterable<Text> values, Context context) throws
             IOException, InterruptedException {
-	    ArrayList<FuzzyIndividual> indivs = new ArrayList<FuzzyIndividual>();
+        ArrayList<FuzzyIndividual> indivs = new ArrayList<FuzzyIndividual>();
         FuzzyIndividual fuzObj;
         for (Text value : values) {
             fuzObj = new FuzzyIndividual();
             fuzObj.setChromosome(value.toString());
             indivs.add(fuzObj);
         }
-        FuzzyIndividual[] individuals = (FuzzyIndividual[])indivs.toArray();
+        FuzzyIndividual[] individuals = (FuzzyIndividual[]) indivs.toArray();
         //Call GA to Evolve Population
         evolvePopulation();
-        for(int i = 0; i < individuals.length; i++){
+        for (int i = 0; i < individuals.length; i++) {
             fuzObj = individuals[i];
             context.write(NullWritable.get(), new Text(fuzObj.toString()));
         }
-       
+
     }
 
     /**

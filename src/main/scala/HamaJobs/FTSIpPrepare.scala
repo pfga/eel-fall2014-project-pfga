@@ -38,7 +38,7 @@ object FTSIpPrepare extends App {
   val startTime: Long = System.nanoTime()
   bsp.waitForCompletion(true)
   System.out.println("Job Finished in " +
-    (System.nanoTime - startTime) / NANO_SEC + " seconds")
+    (System.nanoTime - startTime) / NANOSECOND + " seconds")
 
   class DataParseFTS extends BSP[LW, T, T, LW, T] {
     var mapRedFunc: ParseFunctions = _

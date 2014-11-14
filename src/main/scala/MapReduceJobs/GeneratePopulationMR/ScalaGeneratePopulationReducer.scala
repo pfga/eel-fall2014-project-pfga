@@ -18,7 +18,6 @@ class ScalaGeneratePopulationReducer
 
   override def setup(conT: Reducer[NW, T, NW, T]#Context) = {
     val conf = conT.getConfiguration
-    setLimit(conf.getInt("limit", 30))
     multipleOp = new MultipleOutputs[NW, T](conT)
     readCache(conf)
   }

@@ -136,20 +136,6 @@ object HelperFunctions {
     base
   }
 
-  def readPopulationFile(conf: Configuration, opStr: String) = {
-    val pop = ArrayBuffer[FuzzyIndividual]()
-
-    def parseLine(line: String) = {
-      val f = new FuzzyIndividual()
-      f.setChromosome(line)
-      pop.append(f)
-    }
-
-    baseReadCacheFile(conf, opStr, parseLine)
-
-    pop
-  }
-
   def baseReadCacheFile(conf: Configuration, opStr: String,
                         parseLine: (String => Unit)) = {
     try {
@@ -166,5 +152,19 @@ object HelperFunctions {
     } catch {
       case e: Exception => println(e)
     }
+  }
+
+  def readPopulationFile(conf: Configuration, opStr: String) = {
+    val pop = ArrayBuffer[FuzzyIndividual]()
+
+    def parseLine(line: String) = {
+      val f = new FuzzyIndividual()
+      f.setChromosome(line)
+      pop.append(f)
+    }
+
+    baseReadCacheFile(conf, opStr, parseLine)
+
+    pop
   }
 }

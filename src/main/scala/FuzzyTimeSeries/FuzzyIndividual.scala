@@ -64,10 +64,6 @@ class FuzzyIndividual {
     }
   }
 
-  def setDiscourseMap(i: Int, u1: Int, u2: Int) = {
-    discourseMap("A" + (i - 1)) = Math.ceil((u1 + u2) / 2).toInt
-  }
-
   def initializeFuzzySet(ars: Array[(String, Int)], order: Int) {
     val arMap = m.Map[String, String]()
     val lfrgQueue = m.Queue[String]()
@@ -139,6 +135,10 @@ class FuzzyIndividual {
       if (Random.nextBoolean()) chromosome(i) = goodChromosome(i)
       if (i > 0) setDiscourseMap(i, chromosome(i - 1), chromosome(i))
     }
+  }
+
+  def setDiscourseMap(i: Int, u1: Int, u2: Int) = {
+    discourseMap("A" + (i - 1)) = Math.ceil((u1 + u2) / 2).toInt
   }
 
   def mutateChromosome() = {

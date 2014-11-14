@@ -19,7 +19,6 @@ class GeneratePopulationMapper
 
   override def setup(conT: Mapper[LW, T, NW, T]#Context) = {
     val conf = conT.getConfiguration
-    setLimit(conf.getInt("limit", 30))
     per_mapper = conf.getInt("numInd", per_mapper)
     multipleOp = new MultipleOutputs[NW, T](conT)
     mutateNumber = per_mapper * conf.getInt("mutate", 5) / 100
@@ -30,23 +29,6 @@ class GeneratePopulationMapper
                    conT: Mapper[LW, T, NW, T]#Context) = {
     lineCnt += 1
     addToPopulation(value.toString.trim)
-  }
-
-  override def cleanup(conT: Mapper[LW, T, NW, T]#Context) = {
-    if (lineCnt == 0) createPopulation
-    topList.foreach { f => conT.write(NW.get(), new T(f.toString()))}
-    multipleOp.close()
-  }
-
-  def createPopulation() = {
-    (0 until per_mapper).foreach { i =>
-      val f = new FuzzyIndividual()
-      f.generateChromosome(ul, ll, numOfElements)
-      f.initializeFuzzySet(annualRecords, order)
-      f.forecastValues()
-      populateTopList(f)
-      multipleOp.write(GENERATION, NW.get(), new T(f.toString()))
-    }
   }
 
   def addToPopulation(chromosomeStr: String) = {
@@ -68,5 +50,22 @@ class GeneratePopulationMapper
     if (f.mse > oldMse) f.setChromosome(chromosomeStr)
     populateTopList(f)
     multipleOp.write(GENERATION, NW.get(), new T(f.toString()))
+  }
+
+  override def cleanup(conT: Mapper[LW, T, NW, T]#Context) = {
+    if (lineCnt == 0) createPopulation
+    topList.foreach { f => conT.write(NW.get(), new T(f.toString()))}
+    multipleOp.close()
+  }
+
+  def createPopulation() = {
+    (0 until per_mapper).foreach { i =>
+      val f = new FuzzyIndividual()
+      f.generateChromosome(ul, ll, numOfElements)
+      f.initializeFuzzySet(annualRecords, order)
+      f.forecastValues()
+      populateTopList(f)
+      multipleOp.write(GENERATION, NW.get(), new T(f.toString()))
+    }
   }
 }

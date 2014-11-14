@@ -1,9 +1,9 @@
 package MapReduceJobs.GeneratePopulationMR
 
-import Main.PFGAConstants._
+import Parser.ParserUtils.ConfigKeyNames._
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.filecache.DistributedCache
-import org.apache.hadoop.fs.Path
+import org.apache.hadoop.fs.{FileSystem, Path}
 import org.apache.hadoop.io.{NullWritable => NW, Text => T}
 import org.apache.hadoop.mapreduce.Job
 import org.apache.hadoop.mapreduce.lib.input.{FileInputFormat, TextInputFormat}
@@ -13,7 +13,26 @@ import org.apache.hadoop.mapreduce.lib.output.{FileOutputFormat, MultipleOutputs
  * Created by preethu19th on 11/5/14.
  */
 object GeneratePopulationMRDriver {
+  def prepare(conf: Configuration, gaOp: String, fileName: String) = {
+    val fs = FileSystem.get(conf)
+    val GENERATION = conf.get(generation_filename)
+    val REDUCE_PART_FILENAME = conf.get(reduce_part_filename)
+
+    fs.mkdirs(new Path(s"${gaOp}0"))
+
+    for (i <- (0 until conf.getInt(numMapperStr, 0))) {
+      fs.create(new Path(s"${gaOp}0/$GENERATION.$i")).close()
+    }
+    fs.create(new Path(s"${gaOp}0/$REDUCE_PART_FILENAME")).close()
+
+    DistributedCache.addCacheFile(new java.net.URI(fileName), conf)
+  }
+
   def run(conf: Configuration, basePath: String, i: Int) = {
+
+    val GENERATION = conf.get(generation_filename)
+    val REDUCE_PART_FILENAME = conf.get(reduce_part_filename)
+    val BEST_IND = conf.get(best_ind_filename)
 
     val job = new Job(conf)
     val ip = basePath + i

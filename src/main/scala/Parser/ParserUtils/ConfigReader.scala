@@ -4,35 +4,20 @@ import Parser.ParserUtils.ConfigKeyNames._
 import org.apache.commons.configuration.PropertiesConfiguration
 import org.apache.hadoop.conf.Configuration
 
+import scala.collection.JavaConversions._
+
 /**
  * Created by preethu on 9/22/14.
  */
 object ConfigReader {
 
-  def getConf(configName: String) = {
-    val conf = new Configuration()
+  def getConf(conf: Configuration, configName: String) = {
     val config = new PropertiesConfiguration(configName)
     validateConfig(config)
 
-    if (config.isEmpty) {
-      conf.clear()
-    } else {
-      val schemaArr = config.getStringArray(schema)
-      val dtKeyName = config.getString(loadDate)
-      val reduceColName = config.getString(reduceColumn)
-      val reduceAct = config.getString(reduceAction)
-      val delimiter = config.getString(delimiterStr)
-      val ipDtFormat = config.getString(ipDtFormatStr)
-      val opDtFormat = config.getString(opDtFormatStr)
+    if (config.isEmpty) conf.clear()
+    else for (key <- config.getKeys) conf.set(key, config.getString(key))
 
-      conf.set(schema, schemaArr.mkString(","))
-      conf.set(loadDate, dtKeyName)
-      conf.set(reduceColumn, reduceColName)
-      conf.set(reduceAction, reduceAct)
-      conf.set(delimiterStr, delimiter)
-      conf.set(ipDtFormatStr, ipDtFormat)
-      conf.set(opDtFormatStr, opDtFormat)
-    }
     conf
   }
 

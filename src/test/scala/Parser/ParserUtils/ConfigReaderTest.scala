@@ -1,5 +1,6 @@
 package Parser.ParserUtils
 
+import org.apache.hadoop.conf.Configuration
 import org.scalatest.FlatSpec
 
 /**
@@ -8,12 +9,14 @@ import org.scalatest.FlatSpec
  */
 class ConfigReaderTest extends FlatSpec {
   "Config" should "be empty is file is empty" in {
-    val config = ConfigReader.getConf("test.properties")
-    assert(config.size() == 0)
+    val conf = new Configuration()
+    ConfigReader.getConf(conf, "test-parse.properties")
+    assert(conf.size() == 0)
   }
 
   "Config with all properties" should "be valid" in {
-    val config = ConfigReader.getConf("parse-config.properties")
-    assert(config.size() != 0)
+    val conf = new Configuration()
+    ConfigReader.getConf(conf, "parse-config.properties")
+    assert(conf.size() != 0)
   }
 }

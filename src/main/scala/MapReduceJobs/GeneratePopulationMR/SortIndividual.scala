@@ -2,7 +2,7 @@ package MapReduceJobs.GeneratePopulationMR
 
 import FuzzyTimeSeries.FuzzyIndividual
 import HelperUtils.HelperFunctions
-import Main.PFGAConstants._
+import Parser.ParserUtils.ConfigKeyNames._
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.filecache.DistributedCache
 
@@ -16,13 +16,17 @@ trait SortIndividual[T] {
   var ll: Int = _
   var ul: Int = _
   var numOfElements: Int = _
-  var order = 3
+
+  var GENERATION = ""
+  var REDUCE_PART_FILENAME = ""
+  var BEST_IND = ""
 
   var goodPop = ArrayBuffer[FuzzyIndividual]()
 
-  var num_mapper = NUM_MAPPER
-  var per_mapper = PER_MAPPER
+  var num_mapper = 0
+  var per_mapper = 0
   var limit = 0
+  var order = 0
   val topList = ArrayBuffer[T]()
 
   def compare(a: T, b: T): Boolean
@@ -33,8 +37,6 @@ trait SortIndividual[T] {
 
 
   def getNumberByPercentage(per: Int) = num_mapper * per_mapper * per / 100
-
-  def setLimit(per: Int) = limit = getNumberByPercentage(per)
 
   def populateTopList(element: T) = {
     if (topList.length == 0) topList.append(element)
@@ -53,7 +55,10 @@ trait SortIndividual[T] {
   }
 
   def readCache(conf: Configuration) = {
-    order = conf.getInt("order", order)
+    order = conf.getInt(orderStr, order)
+    num_mapper = conf.getInt(numMapperStr, num_mapper)
+    per_mapper = conf.getInt(perMapperStr, per_mapper)
+    limit = getNumberByPercentage(conf.getInt(limitStr, limit))
 
     val cacheFiles = DistributedCache.getLocalCacheFiles(conf)
     val eventFile = cacheFiles(0).toString
@@ -64,5 +69,8 @@ trait SortIndividual[T] {
     numOfElements = recordValues._4
     val goodPopFile = cacheFiles(1).toString
     goodPop = HelperFunctions.readPopulationFile(conf, goodPopFile)
+    GENERATION = conf.get(generation_filename)
+    REDUCE_PART_FILENAME = conf.get(reduce_part_filename)
+    BEST_IND = conf.get(best_ind_filename)
   }
 }

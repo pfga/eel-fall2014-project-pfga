@@ -1,0 +1,135 @@
+<!DOCTYPE HTML>
+<!--
+	Arcana by HTML5 UP
+	html5up.net | @n33co
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>Team Anaka - Project  Summary</title>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+		<meta name="description" content="" />
+		<meta name="keywords" content="" />
+		<!--[if lte IE 8]><script src="css/ie/html5shiv.js"></script><![endif]-->
+		<script src="js/jquery.min.js"></script>
+		<script src="js/jquery.dropotron.min.js"></script>
+		<script src="js/skel.min.js"></script>
+		<script src="js/skel-layers.min.js"></script>
+		<script src="js/init.js"></script>
+		<noscript>
+			<link rel="stylesheet" href="css/skel.css" />
+			<link rel="stylesheet" href="css/style.css" />
+			<link rel="stylesheet" href="css/style-wide.css" />
+		</noscript>
+		<!--[if lte IE 8]><link rel="stylesheet" href="css/ie/v8.css" /><![endif]-->
+	</head>
+	<body>
+
+		<!-- Header -->
+			<div id="header">
+						
+				<!-- Logo -->
+					<h1><a href="index.html" id="logo">EEL 6935 <em>Team Anaka</em></a></h1>
+				
+				<!-- Nav -->
+					<nav id="nav">
+						<ul>
+							<li><a href="index.html">Home</a></li>							
+							<li class="current"><a href="ProjectDetails.html">Project Summary</a></li>							
+							<li><a href="Results.html">Result Visualization</a></li>
+						</ul>
+					</nav>
+
+			</div>
+			
+		<!-- Main -->
+			<section class="wrapper style1">
+				<div class="container">
+					<div class="row 200%">
+						<div class="4u 12u(2)">
+							<div id="sidebar">
+
+								<!-- Sidebar -->
+							
+									<section>
+										<h3>Project Objective</h3>
+										<p align="justify">Primary objective of the project is reliable, quick  and efficient prediction
+										of time based events by making use of parallel computing paradigm.A hybrid model
+										based on Genetic Algorithm(GA) and Fuzzy Time Series(FTS) is being proposed to be
+										implemented on time bound data set.GA+FTS to be used for the purpose of distributed
+										processing of time bound data set using MapReduce on Hadoop framework.</p>
+										<footer>
+											<ul class="icons">
+											<h3>GitHub Link</h3>
+											<li><a href="https://github.com/pfga/eel-fall2014-project-pfga.git" class="icon fa-github"><span class="label">GitHub Link</span></a></li>					
+											</ul>
+										</footer>
+										
+									</section>
+
+									<section>
+										<h3>Another Subheading</h3>
+										<ul class="links">
+											<li><a href="#">Amet turpis, feugiat et sit amet</a></li>
+											<li><a href="#">Ornare in hendrerit in lectus</a></li>
+											<li><a href="#">Semper mod quis eget mi dolore</a></li>
+											<li><a href="#">Consequat etiam lorem phasellus</a></li>
+											<li><a href="#">Amet turpis, feugiat et sit amet</a></li>
+											<li><a href="#">Semper mod quisturpis nisi</a></li>
+										</ul>
+										<footer>
+											<a href="#" class="button">More Random Links</a>
+										</footer>
+									</section>
+						
+							</div>
+						</div>
+						<div class="8u  12u(2) important(2)">
+							<div id="content">
+
+								<!-- Content -->
+							
+									<article>
+										<h3>Project Modules</h3>
+										<p align="justify">There are three major modules data ingestion,prediction, data visualization and the integration
+											module. Data ingestion will allow a configurable way to parse the input data. On existence of
+											necessarily columns for the prediction, the module will execute. Initially, data will be read from
+											MSExcel format.Prediction module will include implementation of FTS and GA algorithms in the MapReduce
+											paradigm.Data visualization module will use the prediction results in various output formats to
+											easily understand and visualize the results.</p>
+											
+										<h3>Hybrid GA+FTS Model</h3>										
+										
+										<span class="image featured"><img src="images/GAFTS.jpg" alt="" /></span>
+										
+										<p align="justify">GA+FTS model can be visualized as combination of two functionalities where GA is used
+										to improve correctness of each corresponding generation over previous ones while FTS is 
+										used fitness calculator to check the mean square error (MSE).</p>
+																			
+										
+										<h3>Algorithm</h3>
+										<p align="justify">
+										<li align="justify">Step 1: Read the training data which in this case will be time based events.</li>
+										<li align="justify">Step 2: Find the maximum and the minimum values of the input data and select thresholds 
+										are greater than the min, max value but are whole numbers.</li>
+										<li align="justify">Step 3: Create the first generation of Genetic Algorithm which will be a set of individuals.
+										Each of the individuals will be a set of buckets which will lie in the range of the thresholds.</li>
+										<li align="justify">Step 4: Create the division of the generation data which can be used in the MapReduce model.</li>
+										<li align="justify">Step 5: The mapper task will apply Fuzzy Time Series Algorithm using the training data 
+										and the randomized individual. This will make prediction for each individual and fitness value 
+										for each of them will be calculated.</li>
+										<li align="justify">Step 6: The reducer task will perform the selection, cross-over and mutation operations 
+										of GA based on the fitness value calculated by the mapper task. Thus, a new generation of 
+										individuals will be created.</li>
+										<li align="justify">Step 7: Repeat Steps 4 through 6 until the convergence point is reached.</li>
+										</p>
+									</article>					
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>			
+			</div>
+
+	</body>
+</html>

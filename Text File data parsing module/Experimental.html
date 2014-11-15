@@ -1,0 +1,58 @@
+<!DOCTYPE HTML>
+
+<html>
+
+    <head>
+
+    </head>
+    <body>
+
+    <input type="file" id="input" name="file" multiple />
+    <br>
+    <output id="files"></output>
+
+        <script>
+            if (window.File && window.FileReader && window.FileList && window.Blob) {
+                //To check that all the  File APIs are supported.
+            } else {
+                alert('The File APIs are not fully supported in this browser.');
+            }
+            function handleFileSelect(evt) {
+                var files = evt.target.files; // FileList object
+
+                // different arrays to store the result data
+                var outputstring = [];
+				var outputyear=[];
+				var predictedvalue=[];
+				var actualvalue=[];
+                for (var i = 0, f; f = files[i]; i++) {
+				
+                    var reader = new FileReader();
+
+                    reader.onload = function(e) {
+                            // load the contents of the file
+                            var text = e.target.result;
+
+                            var lines = text.split(/[\r\n]+/g);
+
+                            for(var i = 0; i < lines.length; i++) {                                
+                                    outputstring.push(lines[i]+'<br>');                                
+                            }
+							
+							for (var k=0 ; k < outputstring.length;k++){
+								var lines = outputstring[k];
+								var container=lines.split(/\b\s+/);
+								outputyear.push(container[0]+'<br>');
+								predictedvalue.push(container[1]+'<br>');
+								actualvalue.push(container[2]+'<br>');
+							}
+							//display the contents of the file
+							document.getElementById('files').innerHTML = 'Output Year are <br><ul>' + outputyear.join('') + '</ul>' + 
+							'Predicted values are <br><ul>' + predictedvalue.join('') + '</ul>'+'Actual values are <br><ul>' + actualvalue.join('');
+                    };
+                    reader.readAsText(f,"UTF-8");
+                }   
+            }
+            document.getElementById('input').addEventListener('change', handleFileSelect, false);
+        </script>
+    </body>

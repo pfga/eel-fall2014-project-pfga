@@ -50,6 +50,10 @@ class FuzzyIndividual {
     chromosome = u
   }
 
+  def setDiscourseMap(i: Int, u1: Int, u2: Int) = {
+    discourseMap("A" + (i - 1)) = Math.ceil((u1 + u2) / 2).toInt
+  }
+
   /**
    * To initialize universe with already generated data
    * this will be the generated individual. This process
@@ -159,7 +163,7 @@ class FuzzyIndividual {
         (sqSums + Math.pow(rec.fcEvents - rec.events, 2), numFc + 1)
     }
     //Getting the standard deviation.
-    mse = Math.pow(sqSums / numFc, 0.5)
+    mse = sqSums / numFc
   }
 
   /*
@@ -170,10 +174,6 @@ class FuzzyIndividual {
       if (Random.nextBoolean()) chromosome(i) = goodChromosome(i)
       if (i > 0) setDiscourseMap(i, chromosome(i - 1), chromosome(i))
     }
-  }
-
-  def setDiscourseMap(i: Int, u1: Int, u2: Int) = {
-    discourseMap("A" + (i - 1)) = Math.ceil((u1 + u2) / 2).toInt
   }
 
   /*

@@ -10,7 +10,6 @@ import org.apache.hadoop.mapreduce.lib.output.{FileOutputFormat, TextOutputForma
 
 object DataParserMRDriver {
   def run(conf: Configuration, ip: String, op: Path) = {
-
     val job = new Job(conf)
     job.setMapOutputKeyClass(classOf[T])
     job.setMapOutputValueClass(classOf[LW])
@@ -23,7 +22,5 @@ object DataParserMRDriver {
     FileInputFormat.setInputPaths(job, ip)
     FileOutputFormat.setOutputPath(job, op)
     job.waitForCompletion(true)
-
-    //    DistributedCache.releaseCache(new URI(propFile),conf)
   }
 }

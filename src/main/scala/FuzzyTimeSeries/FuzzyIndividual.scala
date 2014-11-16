@@ -5,6 +5,9 @@ import Main.PFGAConstants._
 import scala.collection.{mutable => m}
 import scala.util.Random
 
+/*
+ * This class is used to compute forecasted value using the Fuzzy Time Series Algorithm for a chromosome.
+ */
 class FuzzyIndividual {
 
   val discourseMap = m.Map[String, Int]()
@@ -16,15 +19,20 @@ class FuzzyIndividual {
     s"${chromosome.mkString(SPACE_DELIM)}$MSE_DELIM$mse"
   }
 
+  /*
+  * Randomly create the individual for the first generation.
+  */
   def generateChromosome(ul: Int, ll: Int, numOfElements: Int) = {
     val u = Array.ofDim[Int](numOfElements + 2)
     u(0) = ll
     u(numOfElements + 1) = ul
+    //Using divisions to generate even spaced intervals
     val divisions = (ul - ll + 1) / numOfElements
 
     (1 to numOfElements).foreach { i =>
       val oldLl = u(i - 1) + 1
       val newLl = ll + (i * divisions)
+      //Generating random number
       val random = Math.random()
       val limitDiff = newLl - oldLl + 1
       val randInterval = (random * limitDiff).toInt
@@ -44,16 +52,22 @@ class FuzzyIndividual {
 
   /**
    * To initialize universe with already generated data
-   * @param ipStr this will be the generated individual
+   * this will be the generated individual. This process
+   * will be used for each generation.
+   * @param ipStr
    */
 
   def setChromosome(ipStr: String) = {
+    //Splitting the intervals and pre-generated MSE from the input string
     val ipCols = ipStr.split(MSE_DELIM, 2)
     val intervalStr = ipCols(0)
+    //Setting pre-generated MSE
     mse = ipCols(1).toDouble
+    //Emptying the annual record to be set from the interval string
     annualRecords = Array.empty
     discourseMap.empty
     var prevVal = 0
+    //Processing the interval string to create the annual record.
     chromosome = intervalStr.split(SPACE_DELIM).zipWithIndex.map { ipCols =>
       val (s, idx) = ipCols
       val currVal = s.toInt
@@ -64,6 +78,9 @@ class FuzzyIndividual {
     }
   }
 
+  /*
+  *Creating the FuzzySet map for each interval based on the order of computation.
+  */
   def initializeFuzzySet(ars: Array[(String, Int)], order: Int) {
     val arMap = m.Map[String, String]()
     val lfrgQueue = m.Queue[String]()
@@ -99,19 +116,33 @@ class FuzzyIndividual {
     annualRecords.foreach { rec => rec.flrgRH = arMap.getOrElse(rec.flrgLH, "")}
   }
 
+  /*
+  *This method performs the ceilSearch for a value x.
+  */
   def ceilSearch(x: Int, low: Int = 0, high: Int = chromosome.length): Int = {
     val mid: Int = (low + high) / 2
     if (chromosome(mid) == x) mid
+    /*
+   * If x is greater than arr[mid], then either arr[mid + 1] is ceiling of
+   * x or ceiling lies in arr[mid+1...high]
+   */
     else if (chromosome(mid) < x) {
       if (mid + 1 <= high && x <= chromosome(mid + 1)) mid
       else ceilSearch(x, mid + 1, high)
     }
+    /*
+   * If x is smaller than arr[mid], then either arr[mid] is ceiling of x
+   * or ceiling lies in arr[mid-1...high]
+   */
     else {
       if (mid - 1 >= low && x > chromosome(mid - 1)) mid - 1
       else ceilSearch(x, low, mid - 1)
     }
   }
 
+  /*
+  * This is used for Calculating the MSE
+  * */
   def forecastValues() = {
     val (sqSums, numFc) = annualRecords.foldLeft(0.0, 0) { (mseCols, rec) =>
       val (sqSums, numFc) = mseCols
@@ -127,9 +158,13 @@ class FuzzyIndividual {
       else
         (sqSums + Math.pow(rec.fcEvents - rec.events, 2), numFc + 1)
     }
+    //Getting the standard deviation.
     mse = Math.pow(sqSums / numFc, 0.5)
   }
 
+  /*
+  * Performs the crossover operation of the GA.
+  */
   def crossOverChromosome(goodChromosome: Array[Int]) = {
     (0 until chromosome.length).foreach { i =>
       if (Random.nextBoolean()) chromosome(i) = goodChromosome(i)
@@ -141,6 +176,9 @@ class FuzzyIndividual {
     discourseMap("A" + (i - 1)) = Math.ceil((u1 + u2) / 2).toInt
   }
 
+  /*
+  * Performs the mutation operation of the GA.
+  */
   def mutateChromosome() = {
     val len = chromosome.length
     val idx = Array.ofDim[Int](2)

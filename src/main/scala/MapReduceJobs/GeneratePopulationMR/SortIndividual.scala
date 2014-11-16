@@ -37,7 +37,7 @@ trait SortIndividual[T] {
 
 
   def getNumberByPercentage(per: Int) = num_mapper * per_mapper * per / 100
-
+  //Used for populating the threshold individuals depending upon the limit from configuration.
   def populateTopList(element: T) = {
     if (topList.length == 0) topList.append(element)
     else {

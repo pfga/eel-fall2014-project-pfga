@@ -10,7 +10,7 @@ import org.scalatest.FlatSpec
 class ConfigReaderTest extends FlatSpec {
   "Config" should "be empty is file is empty" in {
     val conf = new Configuration()
-    ConfigReader.getConf(conf, "test-parse.properties")
+    ConfigReader.getConf(conf, "test.properties")
     assert(conf.size() == 0)
   }
 

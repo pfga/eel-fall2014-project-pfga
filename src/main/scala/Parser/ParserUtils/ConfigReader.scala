@@ -17,7 +17,6 @@ object ConfigReader {
 
     if (config.isEmpty) conf.clear()
     else for (key <- config.getKeys) conf.set(key, config.getString(key))
-
     conf
   }
 
@@ -32,7 +31,7 @@ object ConfigReader {
     if (config.isEmpty) {
       config
     } else if (!config.containsKey(colName)) {
-      println(s"'${colName}' property not found!")
+      println(s"'$colName' property not found!")
       config.clear()
     }
   }

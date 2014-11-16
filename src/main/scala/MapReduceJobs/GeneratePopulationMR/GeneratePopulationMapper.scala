@@ -1,7 +1,6 @@
 package MapReduceJobs.GeneratePopulationMR
 
 import FuzzyTimeSeries.FuzzyIndividual
-import Main.PFGAConstants._
 import org.apache.hadoop.io.{LongWritable => LW, NullWritable => NW, Text => T}
 import org.apache.hadoop.mapreduce.Mapper
 import org.apache.hadoop.mapreduce.lib.output.MultipleOutputs

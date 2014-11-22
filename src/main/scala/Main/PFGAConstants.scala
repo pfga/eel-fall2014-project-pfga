@@ -1,6 +1,7 @@
 package Main
 
 /**
+ * This is a helper data structure to store the constant files.
  * Created by preethu19th on 10/5/14.
  */
 object PFGAConstants {

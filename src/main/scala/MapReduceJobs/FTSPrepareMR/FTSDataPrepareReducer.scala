@@ -5,6 +5,7 @@ import org.apache.hadoop.io.{LongWritable => LW, Text => T}
 import org.apache.hadoop.mapreduce.Reducer
 
 /**
+ * This is the reducer to prepare data for the FTS algorithm by parsing data in required format.
  * Created by preethu19th on 10/2/14.
  */
 class FTSDataPrepareReducer extends Reducer[T, LW, T, LW] {
@@ -13,7 +14,7 @@ class FTSDataPrepareReducer extends Reducer[T, LW, T, LW] {
   override def setup(conT: Reducer[T, LW, T, LW]#Context) = {
     mapRedFunc = new ParseFunctions(conT.getConfiguration)
   }
-
+  //Reduce operation of the FTS logic.
   override def reduce(key: T, values: java.lang.Iterable[LW],
                       conT: Reducer[T, LW, T, LW]#Context) = {
     val redAct = key.toString match {

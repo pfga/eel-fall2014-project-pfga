@@ -135,7 +135,7 @@ object HelperFunctions {
     }
     base
   }
-
+  //This method is used to read the cached files after every generation and populate the distributed cache
   def baseReadCacheFile(conf: Configuration, opStr: String,
                         parseLine: (String => Unit)) = {
     try {
@@ -154,6 +154,7 @@ object HelperFunctions {
     }
   }
 
+  //This method is used to read the population file in each iteration of the Genetic ALgorithm
   def readPopulationFile(conf: Configuration, opStr: String) = {
     val pop = ArrayBuffer[FuzzyIndividual]()
 

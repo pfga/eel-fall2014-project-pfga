@@ -29,7 +29,7 @@ class FuzzyIndividual {
     //Using divisions to generate even spaced intervals
     val divisions = (ul - ll + 1) / numOfElements
 
-    (1 to numOfElements).foreach { i =>
+    for (i <- 1 to numOfElements) {
       val oldLl = u(i - 1) + 1
       val newLl = ll + (i * divisions)
       //Generating random number
@@ -91,8 +91,7 @@ class FuzzyIndividual {
 
     annualRecords = Array.ofDim[AnnualRecord](ars.length)
 
-    ars.zipWithIndex.foreach { opCols =>
-      val ((timeSlot, events), idx) = opCols
+    for (((timeSlot, events), idx) <- ars.zipWithIndex) {
       val rec = AnnualRecord(timeSlot, events)
       val currFuzzyStr = "A" + (ceilSearch(rec.events) + 1)
       rec.fuzzySet = currFuzzyStr
@@ -100,7 +99,7 @@ class FuzzyIndividual {
       val lfrg = lfrgQueue.mkString(",").replaceAll("#,", "")
 
       if (!lfrg.isEmpty) rec.flrgLH = lfrg
-      if (lfrgQueue.isEmpty) (1 to order).foreach { i => lfrgQueue.enqueue("#")}
+      if (lfrgQueue.isEmpty) for (i <- 1 to order) lfrgQueue.enqueue("#")
 
       lfrgQueue.dequeue()
       lfrgQueue.enqueue(currFuzzyStr)
@@ -117,7 +116,8 @@ class FuzzyIndividual {
       }
       annualRecords(idx) = rec
     }
-    annualRecords.foreach { rec => rec.flrgRH = arMap.getOrElse(rec.flrgLH, "")}
+    for (rec <- annualRecords) rec.flrgRH = arMap.getOrElse(rec.flrgLH, "")
+
   }
 
   /*
@@ -163,14 +163,14 @@ class FuzzyIndividual {
         (sqSums + Math.pow(rec.fcEvents - rec.events, 2), numFc + 1)
     }
     //Getting the standard deviation.
-    mse = sqSums / numFc
+    mse = Math.sqrt(sqSums / numFc)
   }
 
   /*
   * Performs the crossover operation of the GA.
   */
   def crossOverChromosome(goodChromosome: Array[Int]) = {
-    (0 until chromosome.length).foreach { i =>
+    for (i <- 0 until chromosome.length) {
       if (Random.nextBoolean()) chromosome(i) = goodChromosome(i)
       if (i > 0) setDiscourseMap(i, chromosome(i - 1), chromosome(i))
     }
@@ -185,7 +185,7 @@ class FuzzyIndividual {
     idx(0) = Math.abs(Random.nextInt() % len)
     idx(1) = Math.abs(Random.nextInt() % len)
     val sIdx = idx.sorted
-    (sIdx(0) to sIdx(1)).foreach { i =>
+    for (i <- sIdx(0) to sIdx(1)) {
       val lowerVal = if (i == 0) chromosome(i) else chromosome(i - 1)
       val upperVal = if (i == len - 1) chromosome(i) else chromosome(i + 1)
       if (upperVal - lowerVal > 1) chromosome(i) = (lowerVal + upperVal) / 2

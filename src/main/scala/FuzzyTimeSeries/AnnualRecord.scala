@@ -1,6 +1,7 @@
 package FuzzyTimeSeries
 
 import Main.PFGAConstants._
+
 /*
 * This class is used to hold details of time based events.
 */

@@ -11,7 +11,7 @@ import scala.collection.JavaConversions._
 /**
  * Created by preethu on 11/13/14.
  */
-class ScalaGeneratePopulationReducer
+class GeneratePopulationReducer
   extends Reducer[NW, T, NW, T] with SortIndividual[FuzzyIndividual] {
 
   var multipleOp: MultipleOutputs[NW, T] = _
@@ -26,19 +26,16 @@ class ScalaGeneratePopulationReducer
 
   override def reduce(k: NW, v: java.lang.Iterable[T],
                       conT: Reducer[NW, T, NW, T]#Context) = {
-    v.foreach { vText => checkInd(vText.toString)}
-  }
-
-  def checkInd(vStr: String) = {
-    val f = new FuzzyIndividual()
-    f.setChromosome(vStr)
-    populateTopList(f)
+    for (vText <- v) {
+      val f = new FuzzyIndividual()
+      f.setChromosome(vText.toString)
+      populateTopList(f)
+    }
   }
 
   override def cleanup(conT: Reducer[NW, T, NW, T]#Context) = {
-    topList.foreach { f =>
-      conT.write(NW.get(), new T(f.toString()))
-    }
+    for (f <- topList) conT.write(NW.get(), new T(f.toString()))
+
     val mseOp = topList.foldLeft("") { (mseOp, f) =>
       if (mseOp.isEmpty) f.mse.toString
       else mseOp + MSE_DELIM + f.mse
@@ -48,10 +45,10 @@ class ScalaGeneratePopulationReducer
 
     bestInd.initializeFuzzySet(annualRecords, order)
     bestInd.forecastValues()
-    bestInd.annualRecords.foreach { ar =>
+    for (ar <- bestInd.annualRecords) {
       multipleOp.write(BEST_IND, NW.get, new T(ar.toString()))
     }
-    multipleOp.write(BEST_IND, NW.get, new T("mse=" + bestInd.mse.toString()))
+    println(bestInd.mse)
 
     multipleOp.close()
   }

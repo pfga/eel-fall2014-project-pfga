@@ -48,7 +48,9 @@ class GeneratePopulationReducer
     for (ar <- bestInd.annualRecords) {
       multipleOp.write(BEST_IND, NW.get, new T(ar.toString()))
     }
-    println(bestInd.mse)
+    val mseSplits = bestInd.mse.toString.split("\\.")
+    conT.getCounter(GROUP_NAME, COUNTER_NAME_0).increment(mseSplits(0).toLong)
+    conT.getCounter(GROUP_NAME, COUNTER_NAME_1).increment(mseSplits(1).toLong)
 
     multipleOp.close()
   }

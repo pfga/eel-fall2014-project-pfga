@@ -16,7 +16,7 @@ class ConfigReaderTest extends FlatSpec {
 
   "Config with all properties" should "be valid" in {
     val conf = new Configuration()
-    ConfigReader.getConf(conf, "parse-config.properties")
+    ConfigReader.getConf(conf, "parse-config-seqday.properties")
     assert(conf.size() != 0)
   }
 }

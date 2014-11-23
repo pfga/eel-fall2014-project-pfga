@@ -10,6 +10,8 @@ import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.{FileSystem, Path}
 import org.apache.hadoop.util.GenericOptionsParser
 
+import scala.collection.mutable.ArrayBuffer
+
 /**
  * Driver Program
  * Created by preethu19th on 10/5/14.
@@ -21,8 +23,9 @@ object RunAlgo extends App {
 
   val strArgs = new GenericOptionsParser(conf, args).getRemainingArgs
   //Properties file to read from
-  val configFileName = if (strArgs.size == 0) "parse-config.properties"
-  else strArgs(0)
+  val configFileName =
+    if (strArgs.size == 0) "src/main/resources/parse-config-seqday.properties"
+    else strArgs(0)
 
   ConfigReader.getConf(conf, configFileName)
   val ip = conf.get(ip_path)
@@ -44,7 +47,26 @@ object RunAlgo extends App {
   val ftsIpFileName = s"$ftsIp/${conf.get(reduce_part_filename)}"
   GeneratePopulationMRDriver.prepare(conf, gaOp, ftsIpFileName)
   val iterationCnt = conf.getInt(num_generation, 0)
-  for (i <- 0 until iterationCnt) GeneratePopulationMRDriver.run(conf, gaOp, i)
+  val numOfMses = conf.getInt(numOfMsesCheck, 5)
+  var checkMses = ArrayBuffer[Double]()
+  var i = 0
+  while (i < iterationCnt) {
+    val cnt = GeneratePopulationMRDriver.run(conf, gaOp, i)
+    val mse0 = cnt.getGroup(GROUP_NAME).findCounter(COUNTER_NAME_0).getValue
+    val mse1 = cnt.getGroup(GROUP_NAME).findCounter(COUNTER_NAME_1).getValue
+    val bestMse = s"$mse0.$mse1".toDouble
+    if (checkMses.length == 0) {
+      checkMses.append(bestMse)
+    } else if (bestMse == checkMses(0) && checkMses.length == numOfMses) {
+      i = iterationCnt
+    } else if (bestMse == checkMses(0) && checkMses.length < numOfMses) {
+      checkMses.append(bestMse)
+    } else {
+      checkMses = ArrayBuffer[Double]()
+      checkMses.append(bestMse)
+    }
+    i += 1
+  }
   val stopTime = System.nanoTime()
 
   //Printing the time and memory used for the prediction model.

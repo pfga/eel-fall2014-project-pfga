@@ -24,4 +24,5 @@ object ConfigKeyNames {
   val best_ind_filename = "best_ind_filename"
   val op_base_path = "op_base_path"
   val ip_path = "ip_path"
+  val numOfMsesCheck = "num_of_mses_check"
 }

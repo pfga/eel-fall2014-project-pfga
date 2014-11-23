@@ -15,9 +15,10 @@ object ConfigReader {
     val config = new PropertiesConfiguration(configName)
     validateConfig(config)
 
-    if (config.isEmpty) conf.clear()
-    else for (key <- config.getKeys) conf.set(key, config.getString(key))
-    conf
+    if (config.isEmpty) {
+      conf.clear()
+      sys.error("Important configuration missing")
+    } else for (key <- config.getKeys) conf.set(key, config.getString(key))
   }
 
   def validateConfig(config: PropertiesConfiguration) = {
@@ -31,7 +32,7 @@ object ConfigReader {
     if (config.isEmpty) {
       config
     } else if (!config.containsKey(colName)) {
-      println(s"'$colName' property not found!")
+      sys.error(s"'$colName' property not found!")
       config.clear()
     }
   }

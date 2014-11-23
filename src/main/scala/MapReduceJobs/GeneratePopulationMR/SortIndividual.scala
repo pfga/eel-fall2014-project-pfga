@@ -61,7 +61,6 @@ trait SortIndividual[T] {
     limit = conf.getInt(limitStr, limit)
 
     val cacheFiles = DistributedCache.getLocalCacheFiles(conf)
-    println(cacheFiles.mkString(","))
     val eventFile = cacheFiles(0).toString
     val recordValues = HelperFunctions.readEventFile(conf, eventFile)
     annualRecords = recordValues._1

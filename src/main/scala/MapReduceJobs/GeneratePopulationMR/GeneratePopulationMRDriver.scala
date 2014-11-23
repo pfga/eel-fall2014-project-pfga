@@ -58,5 +58,6 @@ object GeneratePopulationMRDriver {
     MultipleOutputs.addNamedOutput(job, BEST_IND,
       classOf[TextOutputFormat[NW, T]], classOf[NW], classOf[T])
     job.waitForCompletion(true)
+    job.getCounters
   }
 }

@@ -31,12 +31,14 @@ class GeneratePopulationMapper
   override def map(key: LW, value: T,
                    conT: Mapper[LW, T, NW, T]#Context) = {
     lineCnt += 1
-    addToPopulation(value.toString.trim)
+    addToPopulation(conT, value.toString.trim)
   }
-/*
-* It checks the eligibility for crossover/mutation operation and computing the MSE.
-* */
-  def addToPopulation(chromosomeStr: String) = {
+
+  /*
+  * It checks the eligibility for crossover/mutation operation and computing the MSE.
+  * */
+  def addToPopulation(conT: Mapper[LW, T, NW, T]#Context,
+                      chromosomeStr: String) = {
     val f = new FuzzyIndividual()
     f.setChromosome(chromosomeStr)
     val oldMse = f.mse
@@ -61,13 +63,13 @@ class GeneratePopulationMapper
   }
 
   override def cleanup(conT: Mapper[LW, T, NW, T]#Context) = {
-    if (lineCnt == 0) createPopulation
-    topList.foreach { f => conT.write(NW.get(), new T(f.toString()))}
+    if (lineCnt == 0) createPopulation(conT)
+    for (f <- topList) conT.write(NW.get(), new T(f.toString()))
     multipleOp.close()
   }
 
-  def createPopulation() = {
-    (0 until per_mapper).foreach { i =>
+  def createPopulation(conT: Mapper[LW, T, NW, T]#Context) = {
+    for (i <- 0 until per_mapper) {
       val f = new FuzzyIndividual()
       f.generateChromosome(ul, ll, numOfElements)
       f.initializeFuzzySet(annualRecords, order)

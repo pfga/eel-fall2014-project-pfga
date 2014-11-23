@@ -1,10 +1,9 @@
 package HelperUtils
 
-import java.io.{BufferedReader, InputStreamReader}
+import java.io.{BufferedReader, FileReader}
 
 import FuzzyTimeSeries.FuzzyIndividual
 import org.apache.hadoop.conf.Configuration
-import org.apache.hadoop.fs.{FileSystem, Path}
 
 import scala.collection.mutable.ArrayBuffer
 
@@ -135,26 +134,8 @@ object HelperFunctions {
     }
     base
   }
+
   //This method is used to read the cached files after every generation and populate the distributed cache
-  def baseReadCacheFile(conf: Configuration, opStr: String,
-                        parseLine: (String => Unit)) = {
-    try {
-      val op = new Path(opStr)
-      val fs = FileSystem.get(conf)
-      val bufRead = new BufferedReader(new InputStreamReader(fs.open(op)))
-
-      var line = bufRead.readLine()
-      while (line != null) {
-        if (!line.trim.isEmpty) parseLine(line)
-        line = bufRead.readLine()
-      }
-      bufRead.close
-    } catch {
-      case e: Exception => println(e)
-    }
-  }
-
-  //This method is used to read the population file in each iteration of the Genetic ALgorithm
   def readPopulationFile(conf: Configuration, opStr: String) = {
     val pop = ArrayBuffer[FuzzyIndividual]()
 
@@ -167,5 +148,21 @@ object HelperFunctions {
     baseReadCacheFile(conf, opStr, parseLine)
 
     pop
+  }
+
+  def baseReadCacheFile(conf: Configuration, opStr: String,
+                        parseLine: (String => Unit)) = {
+    try {
+      val bufRead = new BufferedReader(new FileReader(opStr))
+
+      var line = bufRead.readLine()
+      while (line != null) {
+        if (!line.trim.isEmpty) parseLine(line)
+        line = bufRead.readLine()
+      }
+      bufRead.close
+    } catch {
+      case e: Exception => println(e)
+    }
   }
 }

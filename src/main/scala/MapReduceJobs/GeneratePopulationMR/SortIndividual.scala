@@ -18,7 +18,6 @@ trait SortIndividual[T] {
   var numOfElements: Int = _
 
   var GENERATION = ""
-  var REDUCE_PART_FILENAME = ""
   var BEST_IND = ""
 
   var goodPop = ArrayBuffer[FuzzyIndividual]()
@@ -37,6 +36,7 @@ trait SortIndividual[T] {
 
 
   def getNumberByPercentage(per: Int) = num_mapper * per_mapper * per / 100
+
   //Used for populating the threshold individuals depending upon the limit from configuration.
   def populateTopList(element: T) = {
     if (topList.length == 0) topList.append(element)
@@ -58,9 +58,10 @@ trait SortIndividual[T] {
     order = conf.getInt(orderStr, order)
     num_mapper = conf.getInt(numMapperStr, num_mapper)
     per_mapper = conf.getInt(perMapperStr, per_mapper)
-    limit = getNumberByPercentage(conf.getInt(limitStr, limit))
+    limit = conf.getInt(limitStr, limit)
 
     val cacheFiles = DistributedCache.getLocalCacheFiles(conf)
+    println(cacheFiles.mkString(","))
     val eventFile = cacheFiles(0).toString
     val recordValues = HelperFunctions.readEventFile(conf, eventFile)
     annualRecords = recordValues._1
@@ -70,7 +71,6 @@ trait SortIndividual[T] {
     val goodPopFile = cacheFiles(1).toString
     goodPop = HelperFunctions.readPopulationFile(conf, goodPopFile)
     GENERATION = conf.get(generation_filename)
-    REDUCE_PART_FILENAME = conf.get(reduce_part_filename)
     BEST_IND = conf.get(best_ind_filename)
   }
 }

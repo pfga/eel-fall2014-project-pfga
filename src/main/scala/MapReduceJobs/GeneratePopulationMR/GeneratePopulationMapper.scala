@@ -6,7 +6,9 @@ import org.apache.hadoop.mapreduce.Mapper
 import org.apache.hadoop.mapreduce.lib.output.MultipleOutputs
 
 import scala.util.Random
-
+/*
+  * This class is used for generating population for the Mapper Code.
+  */
 class GeneratePopulationMapper
   extends Mapper[LW, T, NW, T] with SortIndividual[FuzzyIndividual] {
 

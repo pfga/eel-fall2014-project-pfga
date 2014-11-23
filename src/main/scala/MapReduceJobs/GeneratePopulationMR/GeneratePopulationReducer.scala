@@ -9,13 +9,14 @@ import org.apache.hadoop.mapreduce.lib.output.MultipleOutputs
 import scala.collection.JavaConversions._
 
 /**
+ * This is the reducer to generate the populations
  * Created by preethu on 11/13/14.
  */
 class GeneratePopulationReducer
   extends Reducer[NW, T, NW, T] with SortIndividual[FuzzyIndividual] {
 
   var multipleOp: MultipleOutputs[NW, T] = _
-
+  //Setup for the generation of GA population.
   override def setup(conT: Reducer[NW, T, NW, T]#Context) = {
     val conf = conT.getConfiguration
     multipleOp = new MultipleOutputs[NW, T](conT)
@@ -23,7 +24,7 @@ class GeneratePopulationReducer
   }
 
   def compare(a: FuzzyIndividual, b: FuzzyIndividual) = compareInd(a, b)
-
+  //Perform the reduce operation.
   override def reduce(k: NW, v: java.lang.Iterable[T],
                       conT: Reducer[NW, T, NW, T]#Context) = {
     for (vText <- v) {
@@ -32,7 +33,7 @@ class GeneratePopulationReducer
       populateTopList(f)
     }
   }
-
+  //This is the clean up method for the multiple outputs.
   override def cleanup(conT: Reducer[NW, T, NW, T]#Context) = {
     for (f <- topList) conT.write(NW.get(), new T(f.toString()))
 

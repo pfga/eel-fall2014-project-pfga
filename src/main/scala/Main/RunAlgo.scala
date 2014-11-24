@@ -51,6 +51,7 @@ object RunAlgo extends App {
   var checkMses = ArrayBuffer[Double]()
   var i = 0
   while (i < iterationCnt) {
+    if (i - 2 > 2) fs.delete(new Path(s"$gaOp${i - 2}"), true)
     val cnt = GeneratePopulationMRDriver.run(conf, gaOp, i)
     val mse0 = cnt.getGroup(GROUP_NAME).findCounter(COUNTER_NAME_0).getValue
     val mse1 = cnt.getGroup(GROUP_NAME).findCounter(COUNTER_NAME_1).getValue

@@ -1,4 +1,4 @@
-package MapReduceJobs.GeneratePopulationMR;
+package GAandFTSFramework;
 
 import FuzzyTimeSeries.FuzzyIndividual;
 import org.apache.hadoop.io.NullWritable;

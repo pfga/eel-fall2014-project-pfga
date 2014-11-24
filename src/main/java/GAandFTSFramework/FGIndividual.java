@@ -1,4 +1,4 @@
-package MapReduceJobs.GeneratePopulationMR;
+package GAandFTSFramework;
 
 import java.util.Arrays;
 

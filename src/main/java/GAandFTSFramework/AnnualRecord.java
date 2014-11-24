@@ -1,4 +1,4 @@
-package MapReduceJobs.GeneratePopulationMR;
+package GAandFTSFramework;
 
 /**
  * This is the data structure containing each year's record.

@@ -12,7 +12,7 @@ How to run:
 
 Upload the input files on S3
 
-According to where the input files are uploaded and where the output should be produced make appropriate changes in the following files:
+According to where the input files are uploaded and where the output should be produced, make appropriate changes in the following files:
 
 	src/main/resources/parse-config-100k.properties
 	src/main/resources/parse-config-10k.properties
@@ -22,10 +22,12 @@ To generate the jar
 
 	sbt clean package
 
-The jar will be generated at target/scala-2.10/eel-fall2014-project_2.10-1.0.jar, sbt will download the scala-library jar at ~/.ivy2/cache/org.scala-lang/scala-library/jars/scala-library-2.10.4.jar
+Depending on where the files are to be uploaded, make appropriate changes in add_scala_jar.sh.
+Upload following files on S3
 
-Depending on where the file are to be uploaded, make appropriate changes in add_scala_jar.sh.
-Upload generated jar, scala-library, and add_scala_jar.sh on S3
+	target/scala-2.10/eel-fall2014-project_2.10-1.0.jar
+	~/.ivy2/cache/org.scala-lang/scala-library/jars/scala-library-2.10.4.jar
+	add_scala_jar.sh
 
 While creating the EMR cluster, choose Hadoop 1.0.3 version.
 Add add_scala_jar.sh(using its S3 location, where it was uploaded) as a bootstrappig step, and create steps according to the respective config file; example, arguments for custom jar can be

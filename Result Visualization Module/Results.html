@@ -55,12 +55,81 @@
 										<header>
 											<h2>Team Anaka</h2>
 											<p>Smart-Predict : Experimental Results</p>
-											<h3>Result Parsing Module </h3>	
 										</header>
-											
-										
+										<input type="file" id="input" name="file" multiple />
+										<output id="files"></output>
+										 
+											<script>
+												if (window.File && window.FileReader && window.FileList && window.Blob) {
+													// Great success! All the File APIs are supported.
+													//alert ("Step1");
+												} else {
+													alert('The File APIs are not fully supported in this browser.');
+												}
+												function handleFileSelect(evt) {
+													var files = evt.target.files; // FileList object
+
+													// files is a FileList of File objects. List some properties.
+													var outputstring = [];
+													var outputyear=[];
+													var predictedvalue=[];
+													var actualvalue=[];
+													for (var i = 0, f; f = files[i]; i++) {
+													
+														var reader = new FileReader();
+
+														reader.onload = function(e) {
+																// Print the contents of the file
+																var text = e.target.result;
+
+																var lines = text.split(/[\r\n]+/g); // tolerate both Windows and Unix linebreaks
+
+																for(var i = 0; i < lines.length; i++) {                                
+																		outputstring.push(lines[i]);                                
+																}
+																
+																for (var k=0 ; k < outputstring.length;k++){
+																	var lines = outputstring[k];
+																	var container=lines.split(/\b\s+/);
+																	outputyear.push(container[0]);
+																	predictedvalue.push(container[1]);
+																	actualvalue.push(container[2]);
+																}
+																
+																
+																var table1 = document.getElementsByTagName('table')[0];
+
+																for ( i=1; i <outputyear.length-2; i++) {
+																	var rowrow =  document.createElement('tr');
+																	var cell1  =  document.createElement('td');
+																	var cell2  =  document.createElement('td');
+																	var cell3  =  document.createElement('td');
+																	var text1 = document.createTextNode(outputyear[i]);
+																	var text2 = document.createTextNode(predictedvalue[i]);
+																	var text3 = document.createTextNode(actualvalue[i]);
+																	cell1.appendChild(text1);
+																	cell2.appendChild(text2);
+																	cell3.appendChild(text3);
+																	rowrow.appendChild(cell1);
+																	rowrow.appendChild(cell2);
+																	rowrow.appendChild(cell3);
+																	table1.appendChild(rowrow);
+																}
+																
+														};
+														reader.readAsText(f,"UTF-8");
+													}   
+												}
+												document.getElementById('input').addEventListener('change', handleFileSelect, false);
+											</script>
+											<table>
+											<tr>
+										<td>Year</td>
+										<td>Predicted Value</td>
+										<td>Expected Value</td>
+											</table>
 									</article>
-						
+									  
 							</div>
 						</div>
 						<div class="4u 12u(2)">
@@ -78,9 +147,31 @@
 									<section>
 										<h3>Result Visualization</h3>
 										<ul class="links">
-											<li><a href="#">Result 1 :</a></li>
-											<li><a href="#">Result 2 :</a></li>
-											<li><a href="#">Result 3 :</a></li>
+											<li><a href="https://plot.ly/~shantanu/27">Result 1 : </a></li>
+											<h1>Time comparison between MapReduce and Sequential Paradigm</h1>
+											<p align="justify">We have achieved is significant drop in running time by implementing the GA+FTS prediction model in distributed/parallel manner over normal sequential manner.
+												MapReduce job usually splits the input data-set into independent chunks which are processed by the map tasks. The framework sorts the output of the mapper, which are then provided as an input to the reduce tasks.
+												When the number of individuals are less, sequential manner takes less time as compared to  MapReduce manner. 
+												As the number of individual increases, MapReduce paradigm has upper edge.
+												</p>
+											<li><a href="https://plot.ly/~shantanu/18">Result 2 : </a></li>
+											<h1>MSE Vs. Individuals</h1>
+											<p align="justify">Initially when the number of generations are lower the mean square error is higher, however as the number of generations increases the value of MSE becomes lower until a point of convergence is reached.
+											This means that with calculation of each iterative generation, the results obtained from our forecasting models become more accurate.
+											</p>
+											<li><a href="https://plot.ly/~shantanu/16">Result 3 :</a></li>
+											<h1>Actual values vs. Predicted values for Rainfall</h1>
+											<p align="justify">The accuracy would be evident by using actual data set and comparing the same with our predicted values. 
+											As the number of generations is small, MSE value is high and hence the predicted values are not that accurate when compared to actual values.
+											As the number of   generations increase, the MSE values goes down (until it reaches convergence) there by increasing the accuracy of the predicted data.
+											</p>
+											<li><a href="https://plot.ly/~shantanu/17">Result 4 :</a></li>
+											<h1>MSE Vs. Generations</h1>
+											<p align="justify">The convergence point is one of the most important evaluation parameters in our project.
+											The set of chromosome that has the lowest MSE value will be the best solution that can be used to forecast the rainfall for that particular year. 
+											The two major trends observed are, when the number of intervals in the universe of discourse are increased the value of MSE tends to decrease. 
+											Secondly while generating fuzzy logical relationships, as the order increases MSE will decrease.
+											</p>	
 										</ul>
 										
 									</section>
